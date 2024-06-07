@@ -1,0 +1,113 @@
+####Preprocessing of raw reads#### 
+
+#Allocate all fq.gz reads provided by Novogene (shallow and deep sequenced) in the same folder with distinguishable names
+#the following loop trims residual adaptor sequences, low quiality and short reads. At the same time confirms all barcodes are in the right position
+ 
+for file in *1.fq.gz; do cutadapt --report=full -j 4 -m 60 -b AGATCGGAAGAG $file | gzip -9 > "$(basename "$file")_trim.fq.gz" ; done&
+for file in *2.fq.gz; do cutadapt --report=full -j 4 -m 94 --trim-n -b CTGTCTCTTATA $file | cut -c 1-100 | grep -B1 -A2 "ATTCG..............$"| gzip -9 > "$(basename "$file")_trim.fq.gz"; done
+ 
+ 
+#The following commands were used to reatin correctly paired, complete reads and create a paired bam file to feed into the SPLiTseq toolbox pipeline:
+
+	#library 9
+pairfq makepairs -f ./shallow_s9_1_1.fq.gz_trim.fq.gz  -r shallow_s9_1_2.fq.gz_trim.fq.gz -fp s9_1_1_s_trimmed_pair.fq -rp s9_1_2_s_trimmed_pair.fq -fs s9_1_1_s_trimmed_sing.fq -rs s9_1_2_s_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./shallow_s9_2_1.fq.gz_trim.fq.gz  -r shallow_s9_2_2.fq.gz_trim.fq.gz -fp s9_2_1_s_trimmed_pair.fq -rp s9_2_2_s_trimmed_pair.fq -fs s9_2_1_s_trimmed_sing.fq -rs s9_2_2_s_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./shallow_s9_3_1.fq.gz_trim.fq.gz  -r shallow_s9_3_2.fq.gz_trim.fq.gz -fp s9_3_1_s_trimmed_pair.fq -rp s9_3_2_s_trimmed_pair.fq -fs s9_3_1_s_trimmed_sing.fq -rs s9_3_2_s_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./shallow_s9_4_1.fq.gz_trim.fq.gz  -r shallow_s9_4_2.fq.gz_trim.fq.gz -fp s9_4_1_s_trimmed_pair.fq -rp s9_4_2_s_trimmed_pair.fq -fs s9_4_1_s_trimmed_sing.fq -rs s9_4_2_s_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./shallow_s9_5_1.fq.gz_trim.fq.gz  -r shallow_s9_5_2.fq.gz_trim.fq.gz -fp s9_5_1_s_trimmed_pair.fq -rp s9_5_2_s_trimmed_pair.fq -fs s9_5_1_s_trimmed_sing.fq -rs s9_5_2_s_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./deep_s9_1_1.fq.gz_trim.fq.gz  -r deep_s9_1_2.fq.gz_trim.fq.gz -fp s9_1_1_d_trimmed_pair.fq -rp s9_1_2_d_trimmed_pair.fq -fs s9_1_1_d_trimmed_sing.fq -rs s9_1_2_d_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./deep_s9_2_1.fq.gz_trim.fq.gz  -r deep_s9_2_2.fq.gz_trim.fq.gz -fp s9_2_1_d_trimmed_pair.fq -rp s9_2_2_d_trimmed_pair.fq -fs s9_2_1_d_trimmed_sing.fq -rs s9_2_2_d_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./deep_s9_3_1.fq.gz_trim.fq.gz  -r deep_s9_3_2.fq.gz_trim.fq.gz -fp s9_3_1_d_trimmed_pair.fq -rp s9_3_2_d_trimmed_pair.fq -fs s9_3_1_d_trimmed_sing.fq -rs s9_3_2_d_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./deep_s9_4_1.fq.gz_trim.fq.gz  -r deep_s9_4_2.fq.gz_trim.fq.gz -fp s9_4_1_d_trimmed_pair.fq -rp s9_4_2_d_trimmed_pair.fq -fs s9_4_1_d_trimmed_sing.fq -rs s9_4_2_d_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./deep_s9_5_1.fq.gz_trim.fq.gz  -r deep_s9_5_2.fq.gz_trim.fq.gz -fp s9_5_1_d_trimmed_pair.fq -rp s9_5_2_d_trimmed_pair.fq -fs s9_5_1_d_trimmed_sing.fq -rs s9_5_2_d_trimmed_sing.fq –index --stats
+
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s9_1_1_s_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s9_1_2_s_trimmed_pair.fq  O=./s901_shallow_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp1
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s9_2_1_s_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s9_2_2_s_trimmed_pair.fq  O=./s902_shallow_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp2
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s9_3_1_s_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s9_3_2_s_trimmed_pair.fq  O=./s903_shallow_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp3
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s9_4_1_s_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s9_4_2_s_trimmed_pair.fq  O=./s904_shallow_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp4
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s9_5_1_s_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s9_5_2_s_trimmed_pair.fq  O=./s905_shallow_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp5
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s9_1_1_d_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s9_1_2_d_trimmed_pair.fq  O=./s901_deep_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp1
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s9_2_1_d_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s9_2_2_d_trimmed_pair.fq  O=./s902_deep_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp2
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s9_3_1_d_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s9_3_2_d_trimmed_pair.fq  O=./s903_deep_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp3
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s9_4_1_d_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s9_4_2_d_trimmed_pair.fq  O=./s904_deep_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp4
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s9_5_1_d_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s9_5_2_d_trimmed_pair.fq  O=./s905_deep_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp5
+
+
+	#library 20 
+pairfq makepairs -f ./shallow_s20_1_1.fq.gz_trim.fq.gz  -r shallow_s20_1_2.fq.gz_trim.fq.gz -fp s20_1_1_s_trimmed_pair.fq -rp s20_1_2_s_trimmed_pair.fq -fs s20_1_1_s_trimmed_sing.fq -rs s20_1_2_s_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./shallow_s20_2_1.fq.gz_trim.fq.gz  -r shallow_s20_2_2.fq.gz_trim.fq.gz -fp s20_2_1_s_trimmed_pair.fq -rp s20_2_2_s_trimmed_pair.fq -fs s20_2_2_s_trimmed_sing.fq -rs s20_2_2_s_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./shallow_s20_3_1.fq.gz_trim.fq.gz  -r shallow_s20_3_2.fq.gz_trim.fq.gz -fp s20_3_1_s_trimmed_pair.fq -rp s20_3_2_s_trimmed_pair.fq -fs s20_3_1_s_trimmed_sing.fq -rs s20_3_2_s_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./shallow_s20_4_1.fq.gz_trim.fq.gz  -r shallow_s20_4_2.fq.gz_trim.fq.gz -fp s20_4_1_s_trimmed_pair.fq -rp s20_4_2_s_trimmed_pair.fq -fs s20_4_2_s_trimmed_sing.fq -rs s20_4_2_s_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./deep_s20_1_1.fq.gz_trim.fq.gz  -r deep_s20_1_2.fq.gz_trim.fq.gz -fp s20_1_1_d_trimmed_pair.fq -rp s20_1_2_d_trimmed_pair.fq -fs s20_1_1_d_trimmed_sing.fq -rs s20_1_2_d_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./deep_s20_2_1.fq.gz_trim.fq.gz  -r deep_s20_2_2.fq.gz_trim.fq.gz -fp s20_2_1_d_trimmed_pair.fq -rp s20_2_2_d_trimmed_pair.fq -fs s20_2_2_d_trimmed_sing.fq -rs s20_2_2_d_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./deep_s20_3_1.fq.gz_trim.fq.gz  -r deep_s20_3_2.fq.gz_trim.fq.gz -fp s20_3_1_d_trimmed_pair.fq -rp s20_3_2_d_trimmed_pair.fq -fs s20_3_1_d_trimmed_sing.fq -rs s20_3_2_d_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./deep_s20_4_1.fq.gz_trim.fq.gz  -r deep_s20_4_2.fq.gz_trim.fq.gz -fp s20_4_1_d_trimmed_pair.fq -rp s20_4_2_d_trimmed_pair.fq -fs s20_4_2_d_trimmed_sing.fq -rs s20_4_2_d_trimmed_sing.fq –index --stats
+
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s20_1_1_s_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s20_1_2_s_trimmed_pair.fq  O=./s201_shallow_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp1
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s20_2_1_s_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s20_2_2_s_trimmed_pair.fq  O=./s202_shallow_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp2
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s20_3_1_s_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s20_3_2_s_trimmed_pair.fq  O=./s203_shallow_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp3
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s20_4_1_s_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s20_4_2_s_trimmed_pair.fq  O=./s204_shallow_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp4
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s20_1_1_d_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s20_1_2_d_trimmed_pair.fq  O=./s201_deep_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp1
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s20_2_1_d_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s20_2_2_d_trimmed_pair.fq  O=./s202_deep_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp2
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s20_3_1_d_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s20_3_2_d_trimmed_pair.fq  O=./s203_deep_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp3
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s20_4_1_d_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s20_4_2_d_trimmed_pair.fq  O=./s204_deep_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp4
+
+	#library 27
+pairfq makepairs -f ./shallow_s27_1_1.fq.gz_trim.fq.gz  -r shallow_s27_1_2.fq.gz_trim.fq.gz -fp s27_1_1_s_trimmed_pair.fq -rp s27_1_2_s_trimmed_pair.fq -fs s27_1_1_s_trimmed_sing.fq -rs s27_1_2_s_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./shallow_s27_2_1.fq.gz_trim.fq.gz  -r shallow_s27_2_2.fq.gz_trim.fq.gz -fp s27_2_1_s_trimmed_pair.fq -rp s27_2_2_s_trimmed_pair.fq -fs s27_2_2_s_trimmed_sing.fq -rs s27_2_2_s_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./deep_s27_1_part1_1.fq.gz_trim.fq.gz  -r deep_s27_1_part1_2.fq.gz_trim.fq.gz -fp s27_1_1_part1_d_trimmed_pair.fq -rp s27_1_2_part1_d_trimmed_pair.fq -fs s27_1_1_part1_d_trimmed_sing.fq -rs s27_1_2_part1_d_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./deep_s27_1_part2_1.fq.gz_trim.fq.gz  -r deep_s27_1_part2_2.fq.gz_trim.fq.gz -fp s27_1_1_part2_d_trimmed_pair.fq -rp s27_1_2_part2_d_trimmed_pair.fq -fs s27_1_1_part2_d_trimmed_sing.fq -rs s27_1_2_part2_d_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./deep_s27_1_part3_1.fq.gz_trim.fq.gz  -r deep_s27_1_part3_2.fq.gz_trim.fq.gz -fp s27_1_1_part3_d_trimmed_pair.fq -rp s27_1_2_part3_d_trimmed_pair.fq -fs s27_1_1_part3_d_trimmed_sing.fq -rs s27_1_2_part3_d_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./deep_s27_1_part4_1.fq.gz_trim.fq.gz  -r deep_s27_1_part4_2.fq.gz_trim.fq.gz -fp s27_1_1_part4_d_trimmed_pair.fq -rp s27_1_2_part4_d_trimmed_pair.fq -fs s27_1_1_part4_d_trimmed_sing.fq -rs s27_1_2_part4_d_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./deep_s27_2_part1_1.fq.gz_trim.fq.gz  -r deep_s27_1_part1_2.fq.gz_trim.fq.gz -fp s27_2_1_part1_d_trimmed_pair.fq -rp s27_2_2_part1_d_trimmed_pair.fq -fs s27_1_1_part1_d_trimmed_sing.fq -rs s27_2_2_part1_d_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./deep_s27_2_part2_1.fq.gz_trim.fq.gz  -r deep_s27_2_part2_2.fq.gz_trim.fq.gz -fp s27_2_1_part2_d_trimmed_pair.fq -rp s27_2_2_part2_d_trimmed_pair.fq -fs s27_1_1_part2_d_trimmed_sing.fq -rs s27_2_2_part2_d_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./deep_s27_2_part3_1.fq.gz_trim.fq.gz  -r deep_s27_2_part3_2.fq.gz_trim.fq.gz -fp s27_2_1_part3_d_trimmed_pair.fq -rp s27_2_2_part3_d_trimmed_pair.fq -fs s27_1_1_part3_d_trimmed_sing.fq -rs s27_2_2_part3_d_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./deep_s27_2_part4_1.fq.gz_trim.fq.gz  -r deep_s27_2_part4_2.fq.gz_trim.fq.gz -fp s27_2_1_part4_d_trimmed_pair.fq -rp s27_2_2_part4_d_trimmed_pair.fq -fs s27_1_1_part4_d_trimmed_sing.fq -rs s27_2_2_part4_d_trimmed_sing.fq –index --stats
+
+
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s27_1_1_s_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s27_1_2_s_trimmed_pair.fq  O=./s271_shallow_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp1
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s27_2_1_s_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s27_2_2_s_trimmed_pair.fq  O=./s272_shallow_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp2
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s27_1_1_part1_d_trimmed_pair.fq  F2=/mnt/sda/david/hydractinia/trimming/s27_1_2_part1_d_trimmed_pair.fq  O=./s271_deep_part1_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp1
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s27_1_1_part2_d_trimmed_pair.fq  F2=/mnt/sda/david/hydractinia/trimming/s27_1_2_part2_d_trimmed_pair.fq  O=./s271_deep_part2_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp2
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s27_1_1_part3_d_trimmed_pair.fq  F2=/mnt/sda/david/hydractinia/trimming/s27_1_2_part3_d_trimmed_pair.fq  O=./s271_deep_part3_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp3
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s27_1_1_part4_d_trimmed_pair.fq  F2=/mnt/sda/david/hydractinia/trimming/s27_1_2_part4_d_trimmed_pair.fq  O=./s271_deep_part4_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp4
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s27_2_1_part1_d_trimmed_pair.fq  F2=/mnt/sda/david/hydractinia/trimming/s27_2_2_part1_d_trimmed_pair.fq  O=./s272_deep_part1_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp1
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s27_2_1_part2_d_trimmed_pair.fq  F2=/mnt/sda/david/hydractinia/trimming/s27_2_2_part2_d_trimmed_pair.fq  O=./s272_deep_part2_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp2
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s27_2_1_part3_d_trimmed_pair.fq  F2=/mnt/sda/david/hydractinia/trimming/s27_2_2_part3_d_trimmed_pair.fq  O=./s272_deep_part3_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp3
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s27_2_1_part4_d_trimmed_pair.fq  F2=/mnt/sda/david/hydractinia/trimming/s27_2_2_part4_d_trimmed_pair.fq  O=./s272_deep_part4_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp4
+
+
+	#library 29 
+pairfq makepairs -f ./shallow_s29_1_1.fq.gz_trim.fq.gz  -r shallow_s29_1_2.fq.gz_trim.fq.gz -fp s29_1_1_s_trimmed_pair.fq -rp s29_1_2_s_trimmed_pair.fq -fs s29_1_1_s_trimmed_sing.fq -rs s29_1_2_s_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./shallow_s29_2_1.fq.gz_trim.fq.gz  -r shallow_s29_2_2.fq.gz_trim.fq.gz -fp s29_2_1_s_trimmed_pair.fq -rp s29_2_2_s_trimmed_pair.fq -fs s29_2_2_s_trimmed_sing.fq -rs s29_2_2_s_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./deep_s29_1_1.fq.gz_trim.fq.gz  -r deep_s29_1_2.fq.gz_trim.fq.gz -fp s29_1_1_d_trimmed_pair.fq -rp s29_1_2_d_trimmed_pair.fq -fs s29_1_1_d_trimmed_sing.fq -rs s29_1_2_d_trimmed_sing.fq –index --stats
+pairfq makepairs -f ./deep_s29_2_1.fq.gz_trim.fq.gz  -r deep_s29_2_2.fq.gz_trim.fq.gz -fp s29_2_1_d_trimmed_pair.fq -rp s29_2_2_d_trimmed_pair.fq -fs s29_2_2_d_trimmed_sing.fq -rs s29_2_2_d_trimmed_sing.fq –index --stats
+
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s29_1_1_s_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s29_1_2_s_trimmed_pair.fq  O=./s291_shallow_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp1
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s29_2_1_s_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s29_2_2_s_trimmed_pair.fq  O=./s292_shallow_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp2
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s29_1_1_d_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s29_1_2_d_trimmed_pair.fq  O=./s291_deep_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp3
+picard FastqToSam F1=/mnt/sda/david/hydractinia/trimming/s29_2_1_d_trimmed_pair.fq F2=/mnt/sda/david/hydractinia/trimming/s29_2_2_d_trimmed_pair.fq  O=./s292_deep_read_pairs.bam SM=Hydractinia TMP_DIR=./tmp4
+
+#all the _sing.fq files are deleted since are not going to be used anymore 
+#the resulting bams are linked with the command ln -s into their own folder to be processed 
+
+#The splitseq toolbox pipeline (Split-seq_pipeline.sh) was slightly modified  in the flags
+#"--runThreadN" to 30 for running with more efficiency in the server 
+#"--outFilterMultimapNmax" into two modalities 1 (named no multimappers modality) and 200 (named with multimappers modality) of the star alignment command to allow only one and upto 200 alignments for a certain read 
+#"--outReadsUnmapped Fastx" to output unmapped or partially mapped reads for further analyses 
+#examples for:
+	#no multimappers
+Split-seq_pipeline_nomp.sh -g /mnt/sda/david/hydractinia/genome_2_ncbi/HSymV2.1_reference/star_index/ -r /mnt/sda/david/hydractinia/genome_2_ncbi/HSymV2.1_reference/HSymV2.1.fasta  -n 25000 ../s271_deep_part1_read_pairs.bam
+	#with multimappers
+Split-seq_pipeline_withmp.sh -g /mnt/sda/david/hydractinia/genome_2_ncbi/HSymV2.1_reference/star_index/ -r /mnt/sda/david/hydractinia/genome_2_ncbi/HSymV2.1_reference/HSymV2.1.fasta -n 25000 ../s271_deep_part2_read_pairs.bam
+
+
+#Once all deep and shallow sequenced libraries are done, run for each library in each modality in an accordingly named folder: 
+samtools merge /PATH/merge_of_all/date_genome_2.1_modality/libX_merge.bam  /PATH_to_deep_processed_library/genome_2.1_modality/gene_function_tagged.bam /PATH_to_shallow_processed_library/genome_2.1_modality/gene_function_tagged.bam
+
+#From here all merged bam files are converted into count matrices with a loop,  which works once you have all the files of a certain modality in the same folder
+	#with multimappers
+for file in *_merge.bam; do dropseq DigitalExpression INPUT=./$file OUTPUT=/mnt/sda/david/hydractinia/matrices_and_seurat/20230703_genome_2.1_with_multimappers/"$(basename "$file")_50GENESPERCELL_MQ0.txt.gz" SUMMARY=/mnt/sda/david/hydractinia/matrices_and_seurat/20230703_genome_2.1_with_multimappers/"$(basename "$file")_50GENESPERCELL_MQ0_summary.txt" LOCUS_FUNCTION_LIST=INTRONIC READ_MQ=0 EDIT_DISTANCE=1 MIN_NUM_GENES_PER_CELL=50 TMP_DIR=/mnt/sda/david/hydractinia/matrices_and_seurat/20230703_genome_2.1_with_multimappers/tmp1; done
+
+	#no multimappers
+for file in *_merge.bam; do dropseq DigitalExpression INPUT=./$file OUTPUT=/mnt/sda/david/hydractinia/matrices_and_seurat/20230703_genome_2.1_no_multimappers/"$(basename "$file")_50GENESPERCELL_MQ0.txt.gz" SUMMARY=/mnt/sda/david/hydractinia/matrices_and_seurat/20230703_genome_2.1_no_multimappers/"$(basename "$file")_50GENESPERCELL_MQ0_summary.txt" LOCUS_FUNCTION_LIST=INTRONIC READ_MQ=0 EDIT_DISTANCE=1 MIN_NUM_GENES_PER_CELL=50 TMP_DIR=/mnt/sda/david/hydractinia/matrices_and_seurat/20230703_genome_2.1_no_multimappers/tmp1; done
