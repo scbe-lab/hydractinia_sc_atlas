@@ -1,4 +1,4 @@
-# Single Cell Atlas from the whole colony of Hydractinia symbiolongicarpus
+# Single Cell Atlas from the whole colony of *Hydractinia symbiolongicarpus*
 Code used for the processing and analyses of the *Hydractinia symbiolongicarpus* single cell atlas manuscript
 
 ## General description 
