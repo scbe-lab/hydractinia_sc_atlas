@@ -7,7 +7,7 @@ This code contains notebooks for the code only corresponding to the manuscript S
     
 ### [BiorXiv preprint](https://www.biorxiv.org/content/10.1101/2024.06.18.599157v2)
 
-### [USCSC cell browser](https://cells.ucsc.edu/?ds=hydractinia)
+### [UCSC cell browser](https://cells.ucsc.edu/?ds=hydractinia)
    
 ### [GEO (scRNA-seq reads): GSE269914](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE269914)
 
