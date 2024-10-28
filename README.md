@@ -4,9 +4,9 @@ Code used for the processing and analyses of the *Hydractinia symbiolongicarpus*
 ## General description 
 
 This code contains notebooks for the code only corresponding to the manuscript Salamanca-Diaz et al., 2024
-    *BiorXiv*: https://www.biorxiv.org/content/10.1101/2024.06.18.599157v1
-    *USCSC cell browser*: https://cells.ucsc.edu/?ds=hydractinia
-    *GEO (scRNA-seq reads)*: GSE269914
+    *BiorXiv*: https://www.biorxiv.org/content/10.1101/2024.06.18.599157v1 \t
+    *USCSC cell browser*: https://cells.ucsc.edu/?ds=hydractinia \t
+    *GEO (scRNA-seq reads)*: GSE269914 \t
 
 Notebooks contain the necesary code to run: 
 
