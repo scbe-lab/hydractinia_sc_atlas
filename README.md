@@ -1,22 +1,22 @@
-# Single Cell Atlas from the whole colony of *Hydractinia symbiolongicarpus*
+## Single Cell Atlas from the whole colony of *Hydractinia symbiolongicarpus*
 Code used for the processing and analyses of the *Hydractinia symbiolongicarpus* single cell atlas manuscript
 
-## General description 
+### General description 
 
 This code contains notebooks for the code only corresponding to the manuscript Salamanca-Diaz et al., 2024
     
-*BiorXiv*
+### *BiorXiv*
 
 	https://www.biorxiv.org/content/10.1101/2024.06.18.599157v1
- *USCSC cell browser*
+### *USCSC cell browser*
  
  	https://cells.ucsc.edu/?ds=hydractinia
   
-  *GEO (scRNA-seq reads)* 
+### *GEO (scRNA-seq reads)* 
   
   	GSE269914
 
-Notebooks contain the necesary code to run: 
+## Notebooks contain the necesary code to run: 
 
 	1. Library analyses, preproccesing and initial clustering. 
 	2. Compositional analyses of the annotated clusters.
