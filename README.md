@@ -9,9 +9,9 @@ Pipeline used for the processing and analysis of the *Hydractinia symbiolongicar
 
 ## Notebooks contain the necesary code to run: 
 
-	1. Library analyses, preproccesing and initial clustering. 
-	2. Compositional analyses of the annotated clusters.
-	3. Transcription factor annotation, analysis, Coocurrence matrix and WGCNA pipeline.
-	4. Shematrin repeat finder custom code and *Stylophora* metacell score. 
+### 1. Library analyses, preproccesing and initial clustering. 
+### 2. Compositional analyses of the annotated clusters.
+### 3. Transcription factor annotation, analysis, Coocurrence matrix and WGCNA pipeline.
+### 4. Shematrin repeat finder custom code and *Stylophora* metacell score. 
 
 All analyses were run using Jupyter Notebook with Python v3 and R v4.1 in Windows OS 8 and Ubuntu GNU/Linux. All packages used are fully described in the methods section of the manuscript. 
